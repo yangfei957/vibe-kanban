@@ -75,6 +75,11 @@ We would prefer that ideas and changes are first raised with the core team via [
 - [Node.js](https://nodejs.org/) (>=20)
 - [pnpm](https://pnpm.io/) (>=8)
 
+System-level build dependencies (Linux):
+```bash
+sudo apt-get update && sudo apt-get install -y build-essential clang libclang-dev zip pkg-config libssl-dev
+```
+
 Additional development tools:
 ```bash
 cargo install cargo-watch
@@ -103,9 +108,9 @@ cd packages/local-web
 pnpm run build
 ```
 
-### Build from source (macOS)
+### Build from source
 
-1. Run `./local-build.sh`
+1. Run `./local-build.sh` (the script will check for required system dependencies)
 2. Test with `cd npx-cli && node bin/cli.js`
 
 ### Environment Variables

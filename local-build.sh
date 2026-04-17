@@ -2,6 +2,44 @@
 
 set -e  # Exit on any error
 
+# ── Check required system dependencies ──────────────────────────────────────
+missing=()
+
+command -v zip   >/dev/null 2>&1 || missing+=("zip")
+command -v cc    >/dev/null 2>&1 || missing+=("build-essential (cc)")
+
+# libclang is required by the bindgen crate (used by aws-lc-sys and others).
+# Check for both the clang binary and the shared library that bindgen loads.
+if ! command -v clang >/dev/null 2>&1; then
+  missing+=("clang")
+fi
+_os=$(uname -s)
+if [ "$_os" = "Darwin" ]; then
+  # macOS: libclang ships with Xcode / Command Line Tools
+  if ! find /Library/Developer /Applications/Xcode*.app /usr/local/opt/llvm \
+          -name 'libclang*.dylib' -print -quit 2>/dev/null | grep -q .; then
+    missing+=("libclang (install Xcode Command Line Tools: xcode-select --install)")
+  fi
+else
+  # Linux: look for libclang shared objects
+  if ! find /usr/lib /usr/lib64 /usr/local/lib /usr/lib/llvm-*/lib \
+          -name 'libclang*.so' -print -quit 2>/dev/null | grep -q .; then
+    missing+=("libclang-dev")
+  fi
+fi
+
+if [ ${#missing[@]} -ne 0 ]; then
+  echo "❌ Missing system dependencies: ${missing[*]}"
+  echo ""
+  echo "On Ubuntu/Debian, install them with:"
+  echo "  sudo apt-get update && sudo apt-get install -y build-essential clang libclang-dev zip pkg-config libssl-dev"
+  echo ""
+  echo "On macOS (Homebrew), install them with:"
+  echo "  xcode-select --install   # provides clang & build tools"
+  echo "  brew install zip"
+  exit 1
+fi
+
 # Detect OS and architecture
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m)
