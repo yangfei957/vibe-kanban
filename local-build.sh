@@ -13,8 +13,8 @@ command -v cc    >/dev/null 2>&1 || missing+=("build-essential (cc)")
 if ! command -v clang >/dev/null 2>&1; then
   missing+=("clang")
 fi
-_os=$(uname -s)
-if [ "$_os" = "Darwin" ]; then
+host_os=$(uname -s)
+if [ "$host_os" = "Darwin" ]; then
   # macOS: libclang ships with Xcode / Command Line Tools
   if ! find /Library/Developer /Applications/Xcode*.app /usr/local/opt/llvm \
           -name 'libclang*.dylib' -print -quit 2>/dev/null | grep -q .; then

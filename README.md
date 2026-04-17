@@ -75,9 +75,14 @@ We would prefer that ideas and changes are first raised with the core team via [
 - [Node.js](https://nodejs.org/) (>=20)
 - [pnpm](https://pnpm.io/) (>=8)
 
-System-level build dependencies (Linux):
+System-level build dependencies:
 ```bash
+# Ubuntu / Debian
 sudo apt-get update && sudo apt-get install -y build-essential clang libclang-dev zip pkg-config libssl-dev
+
+# macOS (Homebrew) — clang & build tools ship with Xcode Command Line Tools
+xcode-select --install
+brew install zip    # if not already present
 ```
 
 Additional development tools:
